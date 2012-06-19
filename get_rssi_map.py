@@ -133,7 +133,7 @@ if __name__ == '__main__':
             if c == ord('y'):
                 # add result
                 result[rad][l] = rssi
-                l += LENGTH_UNIT * 40
+                l += LENGTH_UNIT
 
             if c == ord('q'):
                 stdscr.addstr(1, 0, "quit!", curses.A_REVERSE)
