@@ -100,7 +100,7 @@ if __name__ == '__main__':
     RADIUS = 5.0
     LENGTH_UNIT = 0.125 / 2
     result = defaultdict(dict)
-    MIN_RAD, MAX_RAD = 0.0, 180.0
+    MIN_RAD, MAX_RAD = 180.0, 360.0
 
     coordinator, serial_port = get_xbee('COM4')
     xbee_id = XBEES['COM3']['id']
