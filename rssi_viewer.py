@@ -136,7 +136,19 @@ def draw_description(desc):
 
 # main
 font("Helvetica", 10)
-draw_map(H / 2 + 20, H * 2 / 3, load(open('rssi_whip_180-360.p')))
-#draw_map(H / 2 + 20, H * 2 / 3, load(open('rssi_0-180.p')))
+
+datafiles = [
+    {'desc':u"チップアンテナ型\n0-180°",
+     'file':'rssi_0-180.p'},
+    {'desc':u"チップアンテナ型\n180-360°",
+     'file':'rssi_180-360.p'},
+    {'desc':u"ホイップアンテナ型\n0-180°",
+     'file':'rssi_whip_0-180.p'},
+    {'desc':u"ホイップアンテナ型\n180-360°",
+     'file':'rssi_whip_180-360.p'}
+    ]
+
+index = 3
+draw_map(H / 2 + 20, H * 2 / 3, load(open(datafiles[index]['file'])))
 draw_level(W - 40, H - 50)
-draw_description(u"チップアンテナ型\n0-180°")
+draw_description(datafiles[index]['desc'])
