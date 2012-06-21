@@ -134,6 +134,9 @@ if __name__ == '__main__':
                     button_pushed = True
                     button_pushed_old = True
                     sound.play()
+                    if l in range(1, 6):
+                        time.sleep(0.3)
+                        sound.play()
             else:
                 button_pushed_old = False
             time.sleep(0.1)
