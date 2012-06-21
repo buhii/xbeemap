@@ -148,7 +148,7 @@ datafiles = [
      'file':'rssi_whip_180-360.p'}
     ]
 
-index = 3
+index = 0
 draw_map(H / 2 + 20, H * 2 / 3, load(open(datafiles[index]['file'])))
 draw_level(W - 40, H - 50)
 draw_description(datafiles[index]['desc'])

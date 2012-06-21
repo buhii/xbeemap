@@ -102,7 +102,7 @@ if __name__ == '__main__':
     MIN_RAD, MAX_RAD = 0.0, 180.0
 
     # initialize xbee and pygame.mixer
-    coordinator, serial_port = get_xbee('COM1')
+    coordinator, serial_port = get_xbee('COM5')
     xbee_id = XBEES['COM4']['id']
     pygame.mixer.init(44100, -16, 2, 4096)
     sound = pygame.mixer.Sound('bell.wav')
