@@ -5,6 +5,7 @@ import serial
 from collections import defaultdict
 from pickle import dump
 from xbee import XBee
+import pygame
 
 
 XBEES = {    # series 1
@@ -98,8 +99,11 @@ if __name__ == '__main__':
     result = defaultdict(dict)
     MIN_RAD, MAX_RAD = 180.0, 360.0
 
+    # initialize
     coordinator, serial_port = get_xbee('COM1')
     xbee_id = XBEES['COM3']['id']
+    pygame.mixer.init(44100, -16, 2, 4096)
+    sound = pygame.mixer.Sound('bell.wav')
 
     # input
     filename = raw_input("Please specify result filename:")
@@ -114,6 +118,7 @@ if __name__ == '__main__':
     curses.cbreak()
 
     # process
+    button_pushed_old = False
     rad = MIN_RAD
     while rad <= MAX_RAD:
         l = LENGTH_UNIT
@@ -124,8 +129,13 @@ if __name__ == '__main__':
             rssi, dio1s = get_frame_until_rx_io_data(coordinator)
             text = "{:>6.1f}[deg] - {:>6.2f}[cm]: {:>4}[dBm] (y/b/q)".format(rad, l * 100, rssi)
 
-            if len(filter(lambda f: not f, dio1s)) > 1:
-                button_pushed = True
+            if len(filter(lambda f: not f, dio1s)) > 0:
+                if not button_pushed_old:
+                    button_pushed = True
+                    button_pushed_old = True
+                    sound.play()
+            else:
+                button_pushed_old = False
             time.sleep(0.1)
 
             stdscr.addstr(int(l / LENGTH_UNIT) % 40, 0, text)
