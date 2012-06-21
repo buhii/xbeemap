@@ -18,7 +18,7 @@ XBEES = {    # series 1
         'id': '13A20040656815'
         },
     'COM1': {
-        'port': '/dev/tty.usbserial-A8004xHh',
+        'port': '/dev/tty.usbserial-A800f91z',
         'id': '13A20040492D5E',
         },
     'COM5': {  # whip anntena
@@ -102,7 +102,7 @@ if __name__ == '__main__':
     MIN_RAD, MAX_RAD = 0.0, 180.0
 
     # initialize xbee and pygame.mixer
-    coordinator, serial_port = get_xbee('COM5')
+    coordinator, serial_port = get_xbee('COM1')
     xbee_id = XBEES['COM4']['id']
     pygame.mixer.init(44100, -16, 2, 4096)
     sound = pygame.mixer.Sound('bell.wav')

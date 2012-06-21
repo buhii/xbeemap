@@ -29,6 +29,7 @@ def get_color(val):
         v = 0.1
     else:
         v = 0
+    #v = (60 + val) / 30.0
     return (1.0, 0.0, 0.0, v)
 
 def arc(self, originx, originy, radius, startangle, endangle, clockwise=True):
@@ -135,6 +136,7 @@ def draw_description(desc):
 
 # main
 font("Helvetica", 10)
-draw_map(H / 2 + 20, H * 2 / 3, load(open('rssi_0-180.p')))
+draw_map(H / 2 + 20, H * 2 / 3, load(open('rssi_whip_180-360.p')))
+#draw_map(H / 2 + 20, H * 2 / 3, load(open('rssi_0-180.p')))
 draw_level(W - 40, H - 50)
 draw_description(u"チップアンテナ型\n0-180°")
