@@ -3,13 +3,13 @@ import sys
 import curses
 import serial
 from collections import defaultdict
-from pickle import dump, load
-from xbee import ZigBee as XBee
+from pickle import dump
+from xbee import XBee
 
 
 XBEES = {    # series 1
     'COM4': {
-        'port': '/dev/tty.usbserial-A40081kE',
+        'port': '/dev/tty.usbserial-A40081CZ',
         'id': '13A20040492DAD',
         },
     'COM3': {
@@ -19,6 +19,10 @@ XBEES = {    # series 1
     'COM1': {
         'port': '/dev/tty.usbserial-A8004xHh',
         'id': '13A20040492D5E',
+        },
+    'COM5': {  # whip anntena
+        'port': '',
+        'id': '13A200406E7495',
         },
 }
 
@@ -32,14 +36,13 @@ def convert_id(xbee_id):
         tmp += chr(int(hex_char, 16))
     return tmp
 
-def get_frame_until_db(xbee):
+def get_frame_until_rx_io_data(xbee):
     # read frames
     while True:
         try:
             response = coordinator.wait_read_frame()
-            if response['command'] == 'DB':
-                rssi = calc_rssi(response['parameter'])
-                return rssi
+            return (calc_rssi(response['rssi']),
+                    map(lambda d: d['dio-1'], response['samples']))
         except KeyboardInterrupt:
             break
 
@@ -73,13 +76,6 @@ def remote_blink(xbee_from, xbee_to_id):
                        )
         time.sleep(0.100)
 
-def get_rssi(xbee_from, xbee_to_id):
-    # print "- Get RSSI of %s" % xbee_to_id
-    remote_blink(coordinator, xbee_to_id)
-    xbee_from.send('at', command='DB')
-    return get_frame_until_db(xbee_from)
-
-
 def endwin(result, f):
     # write to file
     write(result, f)
@@ -102,7 +98,7 @@ if __name__ == '__main__':
     result = defaultdict(dict)
     MIN_RAD, MAX_RAD = 180.0, 360.0
 
-    coordinator, serial_port = get_xbee('COM4')
+    coordinator, serial_port = get_xbee('COM1')
     xbee_id = XBEES['COM3']['id']
 
     # input
@@ -124,13 +120,20 @@ if __name__ == '__main__':
         stdscr.addstr(0, 0, "{:>6.1f}[deg]".format(rad).center(20), curses.A_REVERSE)
         stdscr.refresh()
         while l <= RADIUS:
-            rssi = get_rssi(coordinator, xbee_id)
+            button_pushed = False
+            rssi, dio1s = get_frame_until_rx_io_data(coordinator)
             text = "{:>6.1f}[deg] - {:>6.2f}[cm]: {:>4}[dBm] (y/q)".format(rad, l * 100, rssi)
+
+            if len(filter(lambda f: not f, dio1s)) > 1:
+                button_pushed = True
+            else:
+                time.sleep(0.1)
+
             stdscr.addstr(int(l / LENGTH_UNIT) % 40, 0, text)
             stdscr.refresh()
             c = stdscr.getch()
 
-            if c == ord('y'):
+            if c == ord('y') or button_pushed:
                 # add result
                 result[rad][l] = rssi
                 l += LENGTH_UNIT

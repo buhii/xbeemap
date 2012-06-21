@@ -24,7 +24,9 @@ def get_color(val):
     if val >= -40:
         v = 1
     elif val >= -45:
-        v = 0.3
+        v = 0.4
+    elif val >= -50:
+        v = 0.1
     else:
         v = 0
     return (1.0, 0.0, 0.0, v)
@@ -125,8 +127,14 @@ def draw_level(x, y):
     line(x, y + h, x + k * -100, y + h)
     nostroke()
 
+def draw_description(desc):
+    font("Helvetica", 16)
+    nostroke()
+    fill(0, 0, 0, 0.5)
+    text(desc, 20, 36)
+
 # main
 font("Helvetica", 10)
 draw_map(H / 2 + 20, H * 2 / 3, load(open('rssi_0-180.p')))
 draw_level(W - 40, H - 50)
-
+draw_description(u"チップアンテナ型\n0-180°")
