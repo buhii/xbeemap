@@ -122,12 +122,11 @@ if __name__ == '__main__':
         while l <= RADIUS:
             button_pushed = False
             rssi, dio1s = get_frame_until_rx_io_data(coordinator)
-            text = "{:>6.1f}[deg] - {:>6.2f}[cm]: {:>4}[dBm] (y/q)".format(rad, l * 100, rssi)
+            text = "{:>6.1f}[deg] - {:>6.2f}[cm]: {:>4}[dBm] (y/b/q)".format(rad, l * 100, rssi)
 
             if len(filter(lambda f: not f, dio1s)) > 1:
                 button_pushed = True
-            else:
-                time.sleep(0.1)
+            time.sleep(0.1)
 
             stdscr.addstr(int(l / LENGTH_UNIT) % 40, 0, text)
             stdscr.refresh()
@@ -138,7 +137,11 @@ if __name__ == '__main__':
                 result[rad][l] = rssi
                 l += LENGTH_UNIT
 
-            if c == ord('q'):
+            elif c == ord('b'):
+                # measure again
+                l -= LENGTH_UNIT
+
+            elif c == ord('q'):
                 stdscr.addstr(1, 0, "quit!", curses.A_REVERSE)
                 endwin(result, result_f)
 
