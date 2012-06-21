@@ -9,12 +9,12 @@ import pygame
 
 
 XBEES = {    # series 1
-    'COM4': {
-        'port': '/dev/tty.usbserial-A40081CZ',
-        'id': '13A20040492DAD',
-        },
     'COM3': {
         'port': '/dev/tty.usbserial-A40081kE',
+        'id': '13A20040492DAD',
+        },
+    'COM4': {
+        'port': '/dev/tty.usbserial-A40081CZ',
         'id': '13A20040656815'
         },
     'COM1': {
@@ -22,7 +22,7 @@ XBEES = {    # series 1
         'id': '13A20040492D5E',
         },
     'COM5': {  # whip anntena
-        'port': '',
+        'port': '/dev/tty.usbserial-A8004xHh',
         'id': '13A200406E7495',
         },
 }
@@ -45,7 +45,7 @@ def get_frame_until_rx_io_data(xbee):
             return (calc_rssi(response['rssi']),
                     map(lambda d: d['dio-1'], response['samples']))
         except KeyboardInterrupt:
-            break
+            endwin()
 
 def calc_rssi(param):
     return -ord(param)
@@ -77,9 +77,11 @@ def remote_blink(xbee_from, xbee_to_id):
                        )
         time.sleep(0.100)
 
-def endwin(result, f):
-    # write to file
-    write(result, f)
+def endwin(result=None, f=None):
+    if result and f:
+        # write to file
+        write(result, f)
+
     # deinitialize curses
     curses.nocbreak()
     curses.echo()
@@ -97,18 +99,18 @@ if __name__ == '__main__':
     RADIUS = 5.0
     LENGTH_UNIT = 0.125 / 2
     result = defaultdict(dict)
-    MIN_RAD, MAX_RAD = 180.0, 360.0
+    MIN_RAD, MAX_RAD = 0.0, 180.0
 
-    # initialize
-    coordinator, serial_port = get_xbee('COM1')
-    xbee_id = XBEES['COM3']['id']
+    # initialize xbee and pygame.mixer
+    coordinator, serial_port = get_xbee('COM5')
+    xbee_id = XBEES['COM4']['id']
     pygame.mixer.init(44100, -16, 2, 4096)
     sound = pygame.mixer.Sound('bell.wav')
 
-    # input
+    # prepare result file
     filename = raw_input("Please specify result filename:")
     if not filename:
-        print "no filename!"
+        print "empty filename!"
         sys.exit()
     result_f = open(filename + '.p', 'w')
 
