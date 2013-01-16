@@ -2,7 +2,7 @@ from math import pi, degrees, atan2, cos, sin
 from pickle import load
 half_pi = pi / 2.0
 
-W = 688
+W = 690
 H = 640
 size(W, H - 160)   # - 160
 FLAG_CIRCLE = True
@@ -46,7 +46,7 @@ def get_color(val):
     else:
         r, v = 1, 0
     #v, r = (60 + val) / 40.0, 1
-    return (ring(-val / 45.0 + 0.51), 1, 1)
+    return (ring(-val / 45.0 + 0.51), 1, (90 + val) / 30.0)
 
 def arc(self, originx, originy, radius, startangle, endangle, clockwise=True):
     """
@@ -113,17 +113,17 @@ def draw_map_contour(x, y):
         fill(*LABELCOLOR)
         for deg in (min_deg + 180, max_deg + 180):
             tx = x + UNIT_PX * l * cos(deg2rad(deg)) - 10
-            ty = y + UNIT_PX * l * sin(deg2rad(deg)) + 15
+            ty = y + UNIT_PX * l * sin(deg2rad(deg)) + 18
             text("%d.0[m]" % l, tx, ty)
         nofill()
     # center meter label
     fill(*LABELCOLOR)
-    text("0.0[m]", x - 6, y + 15)
+    text("0.0[m]", x - 10, y + 18)
     nofill()
 
 def draw_map(x, y, result_dict):
     draw_map_contour(x, y)
-    for l in frange(LENGTH_UNIT, RADIUS, LENGTH_UNIT):
+    for l in reversed(frange(LENGTH_UNIT, RADIUS, LENGTH_UNIT)):
         for deg in frange(MIN_DEG, MAX_DEG, 22.5):
             if deg in result_dict and l in result_dict[deg]:
                 draw_baumkuchen(x, y, deg, l, result_dict[deg][l])
@@ -146,9 +146,9 @@ def draw_level(x, y):
             nostroke()
             fill(*LABELCOLOR)
             if i == max:
-                text("%d[dBm]" % i, x + i * k - 5, y + 20)
+                text("%d[dBm]" % i, x + i * k - 15, y + 24)
             else:
-                text("%d" % i, x + i * k - 8, y + 20)
+                text("%d" % i, x + i * k - 12, y + 24)
     # box
     stroke(*LABELCOLOR)
     strokewidth(0)
@@ -164,7 +164,7 @@ def draw_description(desc):
 
 # main
 background(1)
-font("Helvetica", 10)
+font("Helvetica", 14)
 
 datafiles = [
     {'desc':u"チップアンテナ型\n0-180°",
@@ -178,7 +178,7 @@ datafiles = [
     {'desc':u"ホイップアンテナ型\n180-360°",
      'file':'rssi_whip_180-360.p'}
     ]
-index = 0
+index = 4
 draw_map(H / 2 + 20, H * 2 / 3, load(open(datafiles[index]['file'])))
 draw_level(W + 20, 30)
 # draw_description(datafiles[index]['desc'])
