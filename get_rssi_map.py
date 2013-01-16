@@ -15,14 +15,16 @@ XBEES = {    # series 1
         },
     'COM4': {
         'port': '/dev/tty.usbserial-A40081CZ',
-        'id': '13A20040656815'
+        #'id': '13A20040656815',
+        'id': '13A2004081A4BE',
         },
     'COM1': {
         'port': '/dev/tty.usbserial-A800f91z',
         'id': '13A20040492D5E',
         },
     'COM5': {  # whip anntena
-        'port': '/dev/tty.usbserial-A8004xHh',
+        #'port': '/dev/tty.usbserial-A8004xHh',
+        'port': '/dev/tty.usbserial-A100RU7F',
         'id': '13A200406E7495',
         },
 }
@@ -42,6 +44,7 @@ def get_frame_until_rx_io_data(xbee):
     while True:
         try:
             response = coordinator.wait_read_frame()
+            print response
             return (calc_rssi(response['rssi']),
                     map(lambda d: d['dio-1'], response['samples']))
         except KeyboardInterrupt:
